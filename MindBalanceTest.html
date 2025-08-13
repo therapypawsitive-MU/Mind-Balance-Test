@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แบบสอบถามความเครียด</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Kanit', sans-serif;
+      background: linear-gradient(to bottom right, #fce4ec, #e0f7fa);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #fff8f0;
+      padding: 30px 40px;
+      border-radius: 25px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      max-width: 550px;
+      width: 100%;
+      box-sizing: border-box;
+      position: relative;
+      text-align: center;
+    }
+
+    h2 {
+      text-align: center;
+      color: #ff6f61;
+      margin-bottom: 20px;
+      font-size: 2em;
+    }
+
+    #progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: #cfd8dc;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    #progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #ff6f61;
+      border-radius: 5px;
+      transition: width 0.3s ease;
+    }
+
+    .question, .intro-text {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      color: #6d4c41;
+      word-wrap: break-word;
+      opacity: 1;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .question.show, .intro-text.show {
+      opacity: 1;
+    }
+
+    .options {
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .options.show {
+      opacity: 1;
+    }
+
+    .options label {
+      display: block;
+      background: #fff0f5;
+      padding: 12px 15px;
+      margin: 8px 0;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      word-wrap: break-word;
+    }
+
+    .options label:hover {
+      background: #ffd1dc;
+      transform: scale(1.02);
+    }
+
+    .options input:checked + label {
+      background: #ffb6c1;
+      transform: scale(1.05);
+    }
+
+    .options input {
+      margin-right: 10px;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px 0;
+      font-size: 18px;
+      background: #ff6f61;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #ff3d2e;
+      transform: scale(1.03);
+    }
+
+    button:disabled {
+      background: #ffd1dc;
+      cursor: not-allowed;
+    }
+
+    #back-btn {
+      background: #ffe0e0;
+      margin-top: 10px;
+    }
+
+    #back-btn:hover {
+      background: #ffb6b6;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-weight: bold;
+      font-size: 1.2em;
+      color: #6d4c41;
+      text-align: center;
+      word-wrap: break-word;
+    }
+
+    #result span.level {
+      display: block;
+      font-size: 1.4em;
+      margin-top: 10px;
+      color: #d84315;
+    }
+
+    #result span.desc {
+      display: block;
+      font-size: 1em;
+      margin-top: 10px;
+      color: #6d4c41;
+      white-space: pre-line;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 20px 10px; }
+      .container { padding: 20px; max-width: 95%; }
+      h2 { font-size: 1.5em; }
+      .question, .intro-text { font-size: 1em; }
+      .options label { font-size: 0.95em; padding: 10px; }
+      button { font-size: 16px; padding: 10px 0; }
+      #result { font-size: 1em; }
+      #result span.level { font-size: 1.2em; }
+      #result span.desc { font-size: 0.95em; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🐶 แบบสอบถามความเครียด</h2>
+
+  <!-- หน้าเริ่มต้น -->
+  <div id="intro">
+    <div class="intro-text">สวัสดีคับ! 🐾<br>มาเช็คความเครียดกับผู้เชี่ยวชาญมะหมากันเถอะคับ โฮ่ง !</div>
+    <button id="start-btn">เริ่มทำแบบสอบถาม 🐾</button>
+  </div>
+
+  <div id="progress-bar-container" style="display:none;">
+    <div id="progress-bar"></div>
+  </div>
+
+  <div id="question-container"></div>
+
+  <button id="next-btn" disabled style="display:none;">ถัดไป 🐾</button>
+  <button id="back-btn" style="display:none;">ย้อนกลับ 🐾</button>
+
+  <div id="result"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+  const questions = [
+    { text: "1. มีปัญหาการนอน นอนไม่หลับหรือนอนมาก (Trouble sleeping / insomnia or oversleeping)", options: [
+        { text: "แทบไม่มี / น้อยมาก (Almost never / Very little)", score: 0 },
+        { text: "เป็นบางครั้ง (Sometimes)", score: 1 },
+        { text: "เป็นบ่อยครั้ง (Often)", score: 2 },
+        { text: "เป็นประจำ (Always / Regularly)", score: 3 }
+      ]
+    },
+    { text: "2. สมาธิน้อยลง (Decreased concentration)", options: [
+        { text: "แทบไม่มี / น้อยมาก (Almost never / Very little)", score: 0 },
+        { text: "เป็นบางครั้ง (Sometimes)", score: 1 },
+        { text: "เป็นบ่อยครั้ง (Often)", score: 2 },
+        { text: "เป็นประจำ (Always / Regularly)", score: 3 }
+      ]
+    },
+    { text: "3. หงุดหงิด / กระวนกระวาย / ว้าวุ้นใจ (Irritability / Restlessness / Anxiety)", options: [
+        { text: "แทบไม่มี / น้อยมาก (Almost never / Very little)", score: 0 },
+        { text: "เป็นบางครั้ง (Sometimes)", score: 1 },
+        { text: "เป็นบ่อยครั้ง (Often)", score: 2 },
+        { text: "เป็นประจำ (Always / Regularly)", score: 3 }
+      ]
+    },
+    { text: "4. รู้สึกเบื่อ เซ็ง (Feeling bored / down)", options: [
+        { text: "แทบไม่มี / น้อยมาก (Almost never / Very little)", score: 0 },
+        { text: "เป็นบางครั้ง (Sometimes)", score: 1 },
+        { text: "เป็นบ่อยครั้ง (Often)", score: 2 },
+        { text: "เป็นประจำ (Always / Regularly)", score: 3 }
+      ]
+    },
+    { text: "5. ไม่อยากพบปะผู้คน (Avoiding social interactions)", options: [
+        { text: "แทบไม่มี / น้อยมาก (Almost never / Very little)", score: 0 },
+        { text: "เป็นบางครั้ง (Sometimes)", score: 1 },
+        { text: "เป็นบ่อยครั้ง (Often)", score: 2 },
+        { text: "เป็นประจำ (Always / Regularly)", score: 3 }
+      ]
+    }
+  ];
+
+  const levelDescriptions = [
+    { min:0, max:4, level:"ความเครียดน้อย / Low stress level", desc:"\nคุณจัดการความเครียดได้ดีอยู่แล้ว หากอยากผ่อนคลายมากขึ้น อาจลองหากิจกรรมเบา ๆ ทำ หรือแวะมาเล่นกับน้องหมาของ PawsitiveMU เพื่อเพิ่มรอยยิ้มให้วันของคุณค่ะ 🐶✨\n\nYou’re handling stress well. If you’d like a little extra relaxation, you might enjoy doing something light — or maybe spending time with the dogs at PawsitiveMU for an extra smile. 🐾🌿" },
+    { min:5, max:7, level:"ความเครียดปานกลาง / Moderate stress level", desc:"\nคุณมีความเครียดที่ควรใส่ใจบ้าง อาจลองพักผ่อนให้เพียงพอ หรือถ้าอยากเปลี่ยนบรรยากาศ อาจแวะมาทักทายน้องหมาที่ PawsitiveMU เพื่อช่วยให้ใจสบายขึ้นค่ะ 🐕💖\n\nYour stress level needs some care. You could try to rest well or, if you feel like it, drop by PawsitiveMU to say hi to our dogs — it might help you feel a bit lighter. 🐶🌱" },
+    { min:8, max:9, level:"ความเครียดมาก / High stress level", desc:"\nคุณกำลังเผชิญความเครียดค่อนข้างสูง อาจหาเวลาพักจากสิ่งที่กดดัน และถ้าอยากให้ใจเบาลง ลองใช้เวลาอยู่กับน้องหมาที่ PawsitiveMU ก็อาจช่วยให้คุณยิ้มได้ง่ายขึ้นค่ะ 🐾✨\n\nYou’re facing quite a high level of stress. It may help to take breaks from stressors, and if you’d like, spending time with PawsitiveMU’s dogs could make things feel a little lighter. 🐕💚" },
+    { min:10, max:15, level:"ความเครียดมากที่สุด / Very high stress level", desc:"\nคุณมีความเครียดในระดับที่อาจกระทบต่อสุขภาพจิตและร่างกาย หากจำเป็นควรปรึกษาผู้เชี่ยวชาญ และถ้าต้องการหาที่พักใจสักครู่ ลองแวะมาหาน้องหมาของ PawsitiveMU ก็อาจช่วยให้คุณผ่อนคลายขึ้นได้ค่ะ 🐶❤️\n\nYour stress is at a level that could affect your well-being. Please consider talking to a professional if needed. If you’d like a little break, spending time with PawsitiveMU’s dogs might help you feel more at ease. 🐾💙" }
+  ];
+
+  let currentQuestionIndex = 0;
+  let totalScore = 0;
+  const container = document.getElementById("question-container");
+  const nextBtn = document.getElementById("next-btn");
+  const backBtn = document.getElementById("back-btn");
+  const resultDiv = document.getElementById("result");
+  const progressBar = document.getElementById("progress-bar");
+  const introDiv = document.getElementById("intro");
+  const startBtn = document.getElementById("start-btn");
+
+  function updateProgress() {
+    const percent = ((currentQuestionIndex) / questions.length) * 100;
+    progressBar.style.width = percent + '%';
+  }
+
+  function showQuestion(index) {
+    const q = questions[index];
+    container.innerHTML = `
+      <div class="question">${q.text}</div>
+      <div class="options">
+        ${q.options.map(opt => `
+          <label>
+            <input type="radio" name="option" value="${opt.score}" />
+            ${opt.text}
+          </label>
+        `).join('')}
+      </div>
+    `;
+    nextBtn.disabled = true;
+    backBtn.style.display = index === 0 ? "none" : "block";
+
+    setTimeout(() => {
+      container.querySelector('.question').classList.add('show');
+      container.querySelector('.options').classList.add('show');
+    }, 10);
+
+    const radios = container.querySelectorAll('input[name="option"]');
+    radios.forEach(radio => {
+      radio.addEventListener('change', () => nextBtn.disabled = false);
+    });
+
+    updateProgress();
+  }
+
+  startBtn.addEventListener('click', () => {
+    introDiv.style.display = 'none';
+    nextBtn.style.display = 'block';
+    document.getElementById("progress-bar-container").style.display = 'block';
+    showQuestion(currentQuestionIndex);
+  });
+
+  nextBtn.addEventListener('click', () => {
+    const selected = container.querySelector('input[name="option"]:checked');
+    if (selected) totalScore += parseInt(selected.value, 10);
+
+    currentQuestionIndex++;
+    if(currentQuestionIndex < questions.length) {
+      showQuestion(currentQuestionIndex);
+    } else {
+      showResult();
+    }
+  });
+
+  backBtn.addEventListener('click', () => {
+    currentQuestionIndex--;
+    const selected = container.querySelector('input[name="option"]:checked');
+    if (selected) totalScore -= parseInt(selected.value, 10);
+    showQuestion(currentQuestionIndex);
+  });
+
+function showResult() {
+  // รีเซ็ตให้ progress bar เต็ม
+  progressBar.style.width = '100%';
+
+  container.style.display = 'none';
+  nextBtn.style.display = 'none';
+  backBtn.style.display = 'none';
+
+  const levelObj = levelDescriptions.find(l => totalScore >= l.min && totalScore <= l.max);
+
+  resultDiv.innerHTML = `
+    <span class="level">${levelObj.level}</span>
+    <span class="desc">${levelObj.desc}</span>
+    <button id="restart-btn">ทำใหม่อีกครั้ง 🔄</button>
+  `;
+
+  if(totalScore <= 4){
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+  }
+
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    totalScore = 0;
+    currentQuestionIndex = 0;
+    resultDiv.innerHTML = '';
+    container.style.display = 'block';
+    container.innerHTML = '';
+    introDiv.style.display = 'block';
+    nextBtn.style.display = 'none';
+    backBtn.style.display = 'none';
+    document.getElementById("progress-bar-container").style.display = 'none';
+    progressBar.style.width = '0%';
+  });
+}
+</script>
+
+</body>
+</html>
