@@ -180,7 +180,7 @@
   <!-- หน้าเริ่มต้น -->
   <div id="intro">
     <div class="intro-text">สวัสดีคับ! 🐾<br>มาเช็คความเครียดกับผู้เชี่ยวชาญมะหมากันเถอะคับ โฮ่ง !</div>
-    <button id="start-btn">เริ่มทำแบบสอบถาม </button>
+    <button id="start-btn">เริ่มทำแบบสอบถาม 🐾</button>
   </div>
 
   <div id="progress-bar-container" style="display:none;">
@@ -236,10 +236,10 @@
   ];
 
   const levelDescriptions = [
-    { min:0, max:4, level:"ความเครียดน้อย / Low stress level", desc:"\nคุณจัดการความเครียดได้ดีอยู่แล้ว หากอยากผ่อนคลายมากขึ้น อาจลองหากิจกรรมเบา ๆ ทำ หรือแวะมาเล่นกับน้องหมาของ PawsitiveMU เพื่อเพิ่มรอยยิ้มให้วันของคุณค่ะ 🐶✨\n\n\nYou’re handling stress well. If you’d like a little extra relaxation, you might enjoy doing something light — or maybe spending time with the dogs at PawsitiveMU for an extra smile. 🐾🌿" },
-    { min:5, max:7, level:"ความเครียดปานกลาง / Moderate stress level", desc:"\nคุณมีความเครียดที่ควรใส่ใจบ้าง อาจลองพักผ่อนให้เพียงพอ หรือถ้าอยากเปลี่ยนบรรยากาศ อาจแวะมาทักทายน้องหมาที่ PawsitiveMU เพื่อช่วยให้ใจสบายขึ้นค่ะ 🐕💖\n\n\nYour stress level needs some care. You could try to rest well or, if you feel like it, drop by PawsitiveMU to say hi to our dogs — it might help you feel a bit lighter. 🐶🌱" },
-    { min:8, max:9, level:"ความเครียดมาก / High stress level", desc:"\nคุณกำลังเผชิญความเครียดค่อนข้างสูง อาจหาเวลาพักจากสิ่งที่กดดัน และถ้าอยากให้ใจเบาลง ลองใช้เวลาอยู่กับน้องหมาที่ PawsitiveMU ก็อาจช่วยให้คุณยิ้มได้ง่ายขึ้นค่ะ 🐾✨\n\n\nYou’re facing quite a high level of stress. It may help to take breaks from stressors, and if you’d like, spending time with PawsitiveMU’s dogs could make things feel a little lighter. 🐕💚" },
-    { min:10, max:15, level:"ความเครียดมากที่สุด / Very high stress level", desc:"\nคุณมีความเครียดในระดับที่อาจกระทบต่อสุขภาพจิตและร่างกาย หากจำเป็นควรปรึกษาผู้เชี่ยวชาญ และถ้าต้องการหาที่พักใจสักครู่ ลองแวะมาหาน้องหมาของ PawsitiveMU ก็อาจช่วยให้คุณผ่อนคลายขึ้นได้ค่ะ 🐶❤️\n\n\nYour stress is at a level that could affect your well-being. Please consider talking to a professional if needed. If you’d like a little break, spending time with PawsitiveMU’s dogs might help you feel more at ease. 🐾💙" }
+    { min:0, max:4, level:"ความเครียดน้อย / Low stress level", desc:"\nคุณจัดการความเครียดได้ดีอยู่แล้ว หากอยากผ่อนคลายมากขึ้น อาจลองหากิจกรรมเบา ๆ ทำ หรือแวะมาเล่นกับน้องหมาของ PawsitiveMU เพื่อเพิ่มรอยยิ้มให้วันของคุณค่ะ 🐶✨\n\nYou’re handling stress well. If you’d like a little extra relaxation, you might enjoy doing something light — or maybe spending time with the dogs at PawsitiveMU for an extra smile. 🐾🌿" },
+    { min:5, max:7, level:"ความเครียดปานกลาง / Moderate stress level", desc:"\nคุณมีความเครียดที่ควรใส่ใจบ้าง อาจลองพักผ่อนให้เพียงพอ หรือถ้าอยากเปลี่ยนบรรยากาศ อาจแวะมาทักทายน้องหมาที่ PawsitiveMU เพื่อช่วยให้ใจสบายขึ้นค่ะ 🐕💖\n\nYour stress level needs some care. You could try to rest well or, if you feel like it, drop by PawsitiveMU to say hi to our dogs — it might help you feel a bit lighter. 🐶🌱" },
+    { min:8, max:9, level:"ความเครียดมาก / High stress level", desc:"\nคุณกำลังเผชิญความเครียดค่อนข้างสูง อาจหาเวลาพักจากสิ่งที่กดดัน และถ้าอยากให้ใจเบาลง ลองใช้เวลาอยู่กับน้องหมาที่ PawsitiveMU ก็อาจช่วยให้คุณยิ้มได้ง่ายขึ้นค่ะ 🐾✨\n\nYou’re facing quite a high level of stress. It may help to take breaks from stressors, and if you’d like, spending time with PawsitiveMU’s dogs could make things feel a little lighter. 🐕💚" },
+    { min:10, max:15, level:"ความเครียดมากที่สุด / Very high stress level", desc:"\nคุณมีความเครียดในระดับที่อาจกระทบต่อสุขภาพจิตและร่างกาย หากจำเป็นควรปรึกษาผู้เชี่ยวชาญ และถ้าต้องการหาที่พักใจสักครู่ ลองแวะมาหาน้องหมาของ PawsitiveMU ก็อาจช่วยให้คุณผ่อนคลายขึ้นได้ค่ะ 🐶❤️\n\nYour stress is at a level that could affect your well-being. Please consider talking to a professional if needed. If you’d like a little break, spending time with PawsitiveMU’s dogs might help you feel more at ease. 🐾💙" }
   ];
 
   let currentQuestionIndex = 0;
@@ -312,34 +312,39 @@
     showQuestion(currentQuestionIndex);
   });
 
-  function showResult() {
-    container.style.display = 'none';
+function showResult() {
+  // รีเซ็ตให้ progress bar เต็ม
+  progressBar.style.width = '100%';
+
+  container.style.display = 'none';
+  nextBtn.style.display = 'none';
+  backBtn.style.display = 'none';
+
+  const levelObj = levelDescriptions.find(l => totalScore >= l.min && totalScore <= l.max);
+
+  resultDiv.innerHTML = `
+    <span class="level">${levelObj.level}</span>
+    <span class="desc">${levelObj.desc}</span>
+    <button id="restart-btn">ทำใหม่อีกครั้ง 🔄</button>
+  `;
+
+  if(totalScore <= 4){
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+  }
+
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    totalScore = 0;
+    currentQuestionIndex = 0;
+    resultDiv.innerHTML = '';
+    container.style.display = 'block';
+    container.innerHTML = '';
+    introDiv.style.display = 'block';
     nextBtn.style.display = 'none';
     backBtn.style.display = 'none';
-    document.getElementById("progress-bar-container").style.width = '100%';
-
-    const levelObj = levelDescriptions.find(l => totalScore >= l.min && totalScore <= l.max);
-
-    resultDiv.innerHTML = `
-      <span class="level">${levelObj.level}</span>
-      <span class="desc">${levelObj.desc}</span>
-      <button id="restart-btn">ทำใหม่อีกครั้ง 🔄</button>
-    `;
-
-    if(totalScore <= 4){
-      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-    }
-
-    document.getElementById('restart-btn').addEventListener('click', () => {
-      totalScore = 0;
-      currentQuestionIndex = 0;
-      resultDiv.innerHTML = '';
-      introDiv.style.display = 'block';
-      container.style.display = 'none';
-      nextBtn.style.display = 'none';
-      document.getElementById("progress-bar-container").style.display = 'none';
-    });
-  }
+    document.getElementById("progress-bar-container").style.display = 'none';
+    progressBar.style.width = '0%';
+  });
+}
 </script>
 
 </body>
