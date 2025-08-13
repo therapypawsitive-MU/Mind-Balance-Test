@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>แบบสอบถามความเครียด</title>
   <style>
     body {
@@ -19,18 +20,53 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       max-width: 550px;
       width: 100%;
+      box-sizing: border-box;
+      position: relative;
     }
 
     h2 {
       text-align: center;
       color: #00796b;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+    }
+
+    #progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: #cfd8dc;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    #progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #00796b;
+      border-radius: 5px;
+      transition: width 0.3s ease;
     }
 
     .question {
       font-size: 1.2em;
       margin-bottom: 20px;
       color: #004d40;
+      word-wrap: break-word;
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .question.show {
+      opacity: 1;
+    }
+
+    .options {
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .options.show {
+      opacity: 1;
     }
 
     .options label {
@@ -41,11 +77,17 @@
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.3s, transform 0.2s;
+      word-wrap: break-word;
     }
 
     .options label:hover {
       background: #b2dfdb;
       transform: scale(1.02);
+    }
+
+    .options input:checked + label {
+      background: #80cbc4;
+      transform: scale(1.05);
     }
 
     .options input {
@@ -63,16 +105,26 @@
       border-radius: 10px;
       cursor: pointer;
       margin-top: 20px;
-      transition: background 0.3s;
+      transition: background 0.3s, transform 0.2s;
     }
 
     button:hover:not(:disabled) {
       background: #004d40;
+      transform: scale(1.03);
     }
 
     button:disabled {
       background: #b2dfdb;
       cursor: not-allowed;
+    }
+
+    #back-btn {
+      background: #b0bec5;
+      margin-top: 10px;
+    }
+
+    #back-btn:hover {
+      background: #78909c;
     }
 
     #result {
@@ -81,6 +133,7 @@
       font-size: 1.2em;
       color: #004d40;
       text-align: center;
+      word-wrap: break-word;
     }
 
     #result span.level {
@@ -96,6 +149,19 @@
       margin-top: 10px;
       color: #004d40;
       white-space: pre-line;
+      word-wrap: break-word;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 20px 10px; }
+      .container { padding: 20px; max-width: 95%; }
+      h2 { font-size: 1.5em; }
+      .question { font-size: 1em; }
+      .options label { font-size: 0.95em; padding: 10px; }
+      button { font-size: 16px; padding: 10px 0; }
+      #result { font-size: 1em; }
+      #result span.level { font-size: 1.2em; }
+      #result span.desc { font-size: 0.95em; }
     }
   </style>
 </head>
@@ -104,9 +170,14 @@
 <div class="container">
   <h2>แบบสอบถามความเครียด</h2>
 
+  <div id="progress-bar-container">
+    <div id="progress-bar"></div>
+  </div>
+
   <div id="question-container"></div>
 
   <button id="next-btn" disabled>ถัดไป (Next)</button>
+  <button id="back-btn" style="display:none;">ย้อนกลับ (Back)</button>
 
   <div id="result"></div>
 </div>
@@ -157,13 +228,18 @@
     { min:10, max:15, level:"ความเครียดมากที่สุด / Very high stress level", desc:"\nคุณมีความเครียดในระดับที่อาจกระทบต่อสุขภาพจิตและร่างกาย หากจำเป็นควรปรึกษาผู้เชี่ยวชาญ และถ้าต้องการหาที่พักใจสักครู่ ลองแวะมาหาน้องหมาของ PawsitiveMU ก็อาจช่วยให้คุณผ่อนคลายขึ้นได้ค่ะ 🐶❤️\n\n\nYour stress is at a level that could affect your well-being. Please consider talking to a professional if needed. If you’d like a little break, spending time with PawsitiveMU’s dogs might help you feel more at ease. 🐾💙" }
   ];
 
-
   let currentQuestionIndex = 0;
   let totalScore = 0;
-
   const container = document.getElementById("question-container");
   const nextBtn = document.getElementById("next-btn");
+  const backBtn = document.getElementById("back-btn");
   const resultDiv = document.getElementById("result");
+  const progressBar = document.getElementById("progress-bar");
+
+  function updateProgress() {
+    const percent = ((currentQuestionIndex) / questions.length) * 100;
+    progressBar.style.width = percent + '%';
+  }
 
   function showQuestion(index) {
     const q = questions[index];
@@ -179,11 +255,20 @@
       </div>
     `;
     nextBtn.disabled = true;
+    backBtn.style.display = index === 0 ? "none" : "block";
+
+    // Fade in
+    setTimeout(() => {
+      container.querySelector('.question').classList.add('show');
+      container.querySelector('.options').classList.add('show');
+    }, 10);
 
     const radios = container.querySelectorAll('input[name="option"]');
     radios.forEach(radio => {
       radio.addEventListener('change', () => nextBtn.disabled = false);
     });
+
+    updateProgress();
   }
 
   nextBtn.addEventListener('click', () => {
@@ -198,9 +283,18 @@
     }
   });
 
+  backBtn.addEventListener('click', () => {
+    currentQuestionIndex--;
+    const selected = container.querySelector('input[name="option"]:checked');
+    if (selected) totalScore -= parseInt(selected.value, 10);
+    showQuestion(currentQuestionIndex);
+  });
+
   function showResult() {
     container.style.display = 'none';
     nextBtn.style.display = 'none';
+    backBtn.style.display = 'none';
+    progressBar.style.width = '100%';
 
     const levelObj = levelDescriptions.find(l => totalScore >= l.min && totalScore <= l.max);
 
